@@ -1,56 +1,87 @@
 ---
-
+import AppHeader from './AppHeader.astro'
+import Button from './ui/Button.astro'
+import Input from './ui/Input.astro'
+import ErrorMessage from './ui/ErrorMessage.astro'
 ---
 
-<div>
-  <div role="alert" class="alert alert-success w-full">
-    <svg
-      xmlns="http://www.w3.org/2000/svg"
-      viewBox="0 0 24 24"
-      class="size-6 overflow-visible"
-    >
-      <defs>
-        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-          <feGaussianBlur stdDeviation="2.5" result="coloredBlur"
-          ></feGaussianBlur>
-          <feMerge>
-            <feMergeNode in="coloredBlur"></feMergeNode>
-            <feMergeNode in="SourceGraphic"></feMergeNode>
-          </feMerge>
-        </filter>
-      </defs>
-      <path
-        d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-        stroke="var(--neon-text-color)"
-        stroke-width="2"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        fill="none"
-        filter="url(#glow)"></path>
-    </svg>
-    <p class="text-neon-orange tracking-widest">
-      ¡Neo Metro is working? Look at this
-    </p>
+<div class="container mx-auto p-6 max-w-2xl">
+  <AppHeader />
 
-    <p>
-      <a href="https://neo-metro.dev/components/alert">alert component</a>
-    </p>
+  <div class="border-neon rounded-lg p-6 mb-6">
+    <form id="url-form" class="space-y-4">
+      <Input
+        type="url"
+        id="original-url"
+        name="originalUrl"
+        label="Original URL"
+        placeholder="https://tab-to-dev.click/tejon-tech/"
+        required
+      />
+
+      <Input
+        type="password"
+        id="auth-token"
+        name="authToken"
+        label="Auth Token"
+        placeholder="Enter your auth token"
+        required
+      />
+
+      <Button type="submit" class="btn btn-outline btn-orange w-full">
+        Shorten URL
+      </Button>
+    </form>
   </div>
 
-  <div>
-    <ul class="list border-neon">
-      <div class="list-title border-neon rounded-full">
-        <span class="font-bold text-neon-yellow">LIST TITLE</span>
+  <div id="result" class="hidden border-neon rounded-lg p-6">
+    <h3 class="text-neon-yellow font-bold mb-3">Shortened URL:</h3>
+    <div class="flex items-center space-x-3">
+      <div
+        id="shortened-url"
+        class="flex-1 p-3 rounded bg-transparent border border-neon-orange text-white"
+      >
       </div>
-      <li class="list-row">
-        <span class="italic">LIST ITEM 01</span>
-      </li>
-      <li class="list-row">
-        <span class="italic">LIST ITEM 02</span>
-      </li>
-      <li class="list-row">
-        <span class="italic">LIST ITEM 03</span>
-      </li>
-    </ul>
+      <Button id="copy-btn" class="btn btn-outline btn-orange"> Copy</Button>
+    </div>
   </div>
+
+  <ErrorMessage id="error" message="Error" />
 </div>
+
+<script>
+  document.getElementById('copy-btn')?.addEventListener('click', () => {
+    const shortenedUrl = document.getElementById('shortened-url')?.textContent
+    console.log('Copy button pressed', shortenedUrl)
+
+    if (shortenedUrl) {
+      navigator.clipboard
+        .writeText(shortenedUrl)
+        .then(() => {
+          alert('URL copied to clipboard!')
+        })
+        .catch(() => {
+          alert('Failed to copy URL')
+        })
+    }
+  })
+
+  document.getElementById('url-form')?.addEventListener('submit', (e) => {
+    e.preventDefault()
+    console.log('Form submitted')
+
+    const shortenedUrl = 'https://short.ly/abc123' // Simulated shortened URL
+
+    const urlDiv = document.getElementById('shortened-url')
+    if (urlDiv) {
+      urlDiv.textContent = shortenedUrl
+    }
+
+    const resultDiv = document.getElementById('result')
+    if (resultDiv) {
+      resultDiv.classList.remove('hidden')
+    }
+
+    alert('URL shortened successfully!')
+  })
+</script>
