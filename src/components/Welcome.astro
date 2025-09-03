@@ -42,3 +42,119 @@ import DotLoader from './ui/DotLoader.astro'
     <DotLoader slot="fallback" />
   </UrlList>
 </div>
+
+<script>
+  const API_URL = 'http://localhost:8888/api'
+
+  document.getElementById('url-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault()
+
+    const form = e.target as HTMLFormElement
+    const formData = new FormData(form)
+    const originalUrl = formData.get('originalUrl') as string
+    const authToken = formData.get('authToken') as string
+
+    if (!originalUrl || !authToken) {
+      showError('Please fill in all required fields')
+      return
+    }
+
+    try {
+      new URL(originalUrl)
+    } catch {
+      showError('Please enter a valid URL')
+      return
+    }
+
+    const submitButton = form.querySelector(
+      'button[type="submit"]',
+    ) as HTMLButtonElement
+    const originalButtonText = submitButton.textContent
+
+    try {
+      submitButton.textContent = 'Shortening...'
+      submitButton.disabled = true
+      hideError()
+
+      const response = await fetch(`${API_URL}/shorten`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify({
+          originalUrl: originalUrl,
+          alias: generateRandomAlias(),
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(
+          errorData.message ||
+            `HTTP ${response.status}: ${response.statusText}`,
+        )
+      }
+
+      const result = await response.json()
+
+      showSuccess('URL shortened successfully!')
+
+      form.reset()
+
+      setTimeout(() => {
+        window.location.reload()
+      }, 1000)
+    } catch (error) {
+      console.error('Error shortening URL:', error)
+      showError(
+        error instanceof Error
+          ? error.message
+          : 'Failed to shorten URL. Please try again.',
+      )
+    } finally {
+      submitButton.textContent = originalButtonText
+      submitButton.disabled = false
+    }
+  })
+
+  function showError(message: string) {
+    const errorElement = document.getElementById('error')
+    const errorMessageElement = document.getElementById('error-message')
+    if (errorElement && errorMessageElement) {
+      errorMessageElement.textContent = message
+      errorElement.style.display = 'block'
+      errorElement.classList.remove('hidden')
+      errorElement.className = 'alert alert-error mt-4'
+    }
+  }
+
+  function hideError() {
+    const errorElement = document.getElementById('error')
+    if (errorElement) {
+      errorElement.style.display = 'none'
+      errorElement.classList.add('hidden')
+    }
+  }
+
+  function showSuccess(message: string) {
+    const errorElement = document.getElementById('error')
+    const errorMessageElement = document.getElementById('error-message')
+    if (errorElement && errorMessageElement) {
+      errorMessageElement.textContent = message
+      errorElement.style.display = 'block'
+      errorElement.classList.remove('hidden')
+      errorElement.className = 'alert alert-success mt-4'
+    }
+  }
+
+  function generateRandomAlias(): string {
+    const chars =
+      'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'
+    let result = ''
+    for (let i = 0; i < 8; i++) {
+      result += chars.charAt(Math.floor(Math.random() * chars.length))
+    }
+    return result
+  }
+</script>
