@@ -4,6 +4,7 @@ import Button from './ui/Button.astro'
 import Input from './ui/Input.astro'
 import ErrorMessage from './ui/ErrorMessage.astro'
 import UrlList from './UrlList.astro'
+import DotLoader from './ui/DotLoader.astro'
 ---
 
 <div class="container mx-auto p-6 max-w-2xl">
@@ -38,10 +39,6 @@ import UrlList from './UrlList.astro'
   <ErrorMessage id="error" message="Error" />
 
   <UrlList server:defer>
-    <div slot="fallback" class="loading">
-      <span class="dot"></span>
-      <span class="dot"></span>
-      <span class="dot"></span>
-    </div>
+    <DotLoader slot="fallback" />
   </UrlList>
 </div>
