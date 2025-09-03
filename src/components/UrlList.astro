@@ -1,0 +1,27 @@
+---
+import { API_URL } from 'astro:env/server'
+import UrlCard from './UrlCard.astro'
+import type { UrlData } from '../types/url'
+
+const response = await fetch(`${API_URL}/urls`)
+const urls: UrlData[] = await response.json()
+---
+
+<div class="mt-6">
+  <h2 class="text-2xl font-bold mb-4">Shortened URLs</h2>
+  {
+    urls.length === 0 ? (
+      <p>No URLs shortened yet.</p>
+    ) : (
+      <ul class="space-y-4">
+        {urls.map((url: UrlData, index: number) => (
+          <UrlCard
+            originalUrl={url.originalUrl}
+            shortUrl={url.shortUrl}
+            index={index}
+          />
+        ))}
+      </ul>
+    )
+  }
+</div>
