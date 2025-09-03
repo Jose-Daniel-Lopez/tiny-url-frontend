@@ -1,0 +1,55 @@
+---
+export interface Props {
+  type?: 'text' | 'url' | 'email' | 'password' | 'number'
+  id?: string
+  name?: string
+  placeholder?: string
+  required?: boolean
+  readonly?: boolean
+  class?: string
+  label?: string
+  value?: string
+}
+
+const {
+  type = 'text',
+  id,
+  name,
+  placeholder,
+  required = false,
+  readonly = false,
+  class: className = '',
+  label,
+  value,
+  ...rest
+} = Astro.props
+
+const inputClasses = [
+  'w-full p-3 rounded bg-transparent border border-neon-orange text-white placeholder-gray-400 focus:border-neon-yellow focus:outline-none',
+  readonly && 'cursor-default',
+  className,
+]
+  .filter(Boolean)
+  .join(' ')
+---
+
+<div>
+  {
+    label && (
+      <label for={id} class="block text-neon-yellow font-bold mb-2">
+        {label}
+      </label>
+    )
+  }
+  <input
+    type={type}
+    id={id}
+    name={name}
+    placeholder={placeholder}
+    required={required}
+    readonly={readonly}
+    value={value}
+    class={inputClasses}
+    {...rest}
+  />
+</div>
