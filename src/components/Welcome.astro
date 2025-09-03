@@ -2,36 +2,55 @@
 
 ---
 
-<div role="alert" class="alert alert-success w-full">
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 24 24"
-    class="size-6 overflow-visible"
-  >
-    <defs>
-      <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
-        <feGaussianBlur stdDeviation="2.5" result="coloredBlur"
-        ></feGaussianBlur>
-        <feMerge>
-          <feMergeNode in="coloredBlur"></feMergeNode>
-          <feMergeNode in="SourceGraphic"></feMergeNode>
-        </feMerge>
-      </filter>
-    </defs>
-    <path
-      d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
-      stroke="var(--neon-text-color)"
-      stroke-width="2"
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      fill="none"
-      filter="url(#glow)"></path>
-  </svg>
-  <p class="text-neon-orange tracking-widest">
-    ¡Neo Metro is working? Look at this
-  </p>
+<div>
+  <div role="alert" class="alert alert-success w-full">
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      viewBox="0 0 24 24"
+      class="size-6 overflow-visible"
+    >
+      <defs>
+        <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="2.5" result="coloredBlur"
+          ></feGaussianBlur>
+          <feMerge>
+            <feMergeNode in="coloredBlur"></feMergeNode>
+            <feMergeNode in="SourceGraphic"></feMergeNode>
+          </feMerge>
+        </filter>
+      </defs>
+      <path
+        d="M9 12.75L11.25 15L15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z"
+        stroke="var(--neon-text-color)"
+        stroke-width="2"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        fill="none"
+        filter="url(#glow)"></path>
+    </svg>
+    <p class="text-neon-orange tracking-widest">
+      ¡Neo Metro is working? Look at this
+    </p>
 
-  <p>
-    <a href="https://neo-metro.dev/components/alert">alert component</a>
-  </p>
+    <p>
+      <a href="https://neo-metro.dev/components/alert">alert component</a>
+    </p>
+  </div>
+
+  <div>
+    <ul class="list border-neon">
+      <div class="list-title border-neon rounded-full">
+        <span class="font-bold text-neon-yellow">LIST TITLE</span>
+      </div>
+      <li class="list-row">
+        <span class="italic">LIST ITEM 01</span>
+      </li>
+      <li class="list-row">
+        <span class="italic">LIST ITEM 02</span>
+      </li>
+      <li class="list-row">
+        <span class="italic">LIST ITEM 03</span>
+      </li>
+    </ul>
+  </div>
 </div>
