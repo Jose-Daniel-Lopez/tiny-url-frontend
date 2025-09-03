@@ -1,0 +1,71 @@
+---
+import type { UrlData } from '../types/url'
+import Button from './ui/Button.astro'
+
+interface Props {
+  originalUrl: UrlData['originalUrl']
+  shortUrl: UrlData['shortUrl']
+  index?: number
+}
+
+const { originalUrl, shortUrl, index = 0 } = Astro.props
+const copyButtonId = `copy-btn-${index}`
+---
+
+<li class="border-neon rounded-lg p-4">
+  <p class="mb-3">
+    <strong>Original URL:</strong>
+    <a
+      href={originalUrl}
+      class="text-blue-500 hover:underline"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      {originalUrl}
+    </a>
+  </p>
+  <div class="flex items-center justify-between gap-4">
+    <div class="flex-1">
+      <strong>Shortened URL:</strong>
+      <a
+        href={shortUrl}
+        class="text-blue-500 hover:underline shortened-url"
+        target="_blank"
+        rel="noopener noreferrer"
+        data-url={shortUrl}
+        data-index={index}
+      >
+        {shortUrl}
+      </a>
+    </div>
+    <Button
+      id={copyButtonId}
+      type="button"
+      class="btn btn-outline btn-orange px-4 py-2 text-sm transition-all duration-200 hover:scale-105"
+      data-url={shortUrl}
+      data-index={index}
+    >
+      Copy
+    </Button>
+  </div>
+</li>
+
+<script define:vars={{ copyButtonId, shortUrl }}>
+  const copyButton = document.getElementById(copyButtonId)
+  if (copyButton) {
+    copyButton.addEventListener('click', () => {
+      navigator.clipboard
+        .writeText(shortUrl)
+        .then(() => {
+          const originalText = copyButton.textContent
+          copyButton.textContent = 'Copied!'
+          setTimeout(() => {
+            copyButton.textContent = originalText
+          }, 2000)
+        })
+        .catch(() => {
+          alert('Failed to copy URL')
+        })
+    })
+  }
+</script>
