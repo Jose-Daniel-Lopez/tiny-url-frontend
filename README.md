@@ -1,3 +1,7 @@
+# tiny-url-frontend
+
+URL Shortener Frontend made with Astro
+
 # Astro Starter Kit: Basics
 
 ```sh
