@@ -35,6 +35,9 @@ export default [
         parser: typescriptParser,
         extraFileExtensions: ['.astro'],
       },
+      globals: {
+        fetch: 'readonly',
+      },
     },
     plugins: {
       astro: eslintPluginAstro,
