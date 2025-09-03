@@ -3,7 +3,7 @@ import AppHeader from './AppHeader.astro'
 import Button from './ui/Button.astro'
 import Input from './ui/Input.astro'
 import ErrorMessage from './ui/ErrorMessage.astro'
-import Urls from './Urls.astro'
+import UrlList from './UrlList.astro'
 ---
 
 <div class="container mx-auto p-6 max-w-2xl">
@@ -35,52 +35,13 @@ import Urls from './Urls.astro'
     </form>
   </div>
 
-  <Button id="copy-btn" class="btn btn-outline btn-orange"> Copy</Button>
-
   <ErrorMessage id="error" message="Error" />
 
-  <Urls server:defer>
+  <UrlList server:defer>
     <div slot="fallback" class="loading">
       <span class="dot"></span>
       <span class="dot"></span>
       <span class="dot"></span>
     </div>
-  </Urls>
+  </UrlList>
 </div>
-
-<script>
-  document.getElementById('copy-btn')?.addEventListener('click', () => {
-    const shortenedUrl = document.getElementById('shortened-url')?.textContent
-    console.log('Copy button pressed', shortenedUrl)
-
-    if (shortenedUrl) {
-      navigator.clipboard
-        .writeText(shortenedUrl)
-        .then(() => {
-          alert('URL copied to clipboard!')
-        })
-        .catch(() => {
-          alert('Failed to copy URL')
-        })
-    }
-  })
-
-  document.getElementById('url-form')?.addEventListener('submit', (e) => {
-    e.preventDefault()
-    console.log('Form submitted')
-
-    const shortenedUrl = 'https://short.ly/abc123' // Simulated shortened URL
-
-    const urlDiv = document.getElementById('shortened-url')
-    if (urlDiv) {
-      urlDiv.textContent = shortenedUrl
-    }
-
-    const resultDiv = document.getElementById('result')
-    if (resultDiv) {
-      resultDiv.classList.remove('hidden')
-    }
-
-    alert('URL shortened successfully!')
-  })
-</script>
