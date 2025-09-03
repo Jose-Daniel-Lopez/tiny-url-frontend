@@ -3,6 +3,7 @@ import AppHeader from './AppHeader.astro'
 import Button from './ui/Button.astro'
 import Input from './ui/Input.astro'
 import ErrorMessage from './ui/ErrorMessage.astro'
+import Urls from './Urls.astro'
 ---
 
 <div class="container mx-auto p-6 max-w-2xl">
@@ -34,19 +35,17 @@ import ErrorMessage from './ui/ErrorMessage.astro'
     </form>
   </div>
 
-  <div id="result" class="hidden border-neon rounded-lg p-6">
-    <h3 class="text-neon-yellow font-bold mb-3">Shortened URL:</h3>
-    <div class="flex items-center space-x-3">
-      <div
-        id="shortened-url"
-        class="flex-1 p-3 rounded bg-transparent border border-neon-orange text-white"
-      >
-      </div>
-      <Button id="copy-btn" class="btn btn-outline btn-orange"> Copy</Button>
-    </div>
-  </div>
+  <Button id="copy-btn" class="btn btn-outline btn-orange"> Copy</Button>
 
   <ErrorMessage id="error" message="Error" />
+
+  <Urls server:defer>
+    <div slot="fallback" class="loading">
+      <span class="dot"></span>
+      <span class="dot"></span>
+      <span class="dot"></span>
+    </div>
+  </Urls>
 </div>
 
 <script>
