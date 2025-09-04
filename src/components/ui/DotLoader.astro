@@ -1,5 +1,20 @@
-<div class="loading">
+---
+interface Props {
+  'aria-label'?: string
+}
+
+const { 'aria-label': ariaLabel = 'Loading' } = Astro.props
+---
+
+<div
+  class="loading"
+  role="status"
+  aria-live="polite"
+  aria-label={ariaLabel}
+  aria-atomic="true"
+>
   <span class="dot"></span>
   <span class="dot"></span>
   <span class="dot"></span>
+  <span class="sr-only">{ariaLabel}...</span>
 </div>
