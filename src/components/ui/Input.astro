@@ -1,13 +1,25 @@
 ---
+/**
+ * Props for the Input component.
+ */
 export interface Props {
+  /** The type of the input element. Defaults to 'text'. */
   type?: 'text' | 'url' | 'email' | 'password' | 'number'
+  /** The ID attribute for the input. */
   id?: string
+  /** The name attribute for the input. */
   name?: string
+  /** Placeholder text for the input. */
   placeholder?: string
+  /** Whether the input is required. Defaults to false. */
   required?: boolean
+  /** Whether the input is readonly. Defaults to false. */
   readonly?: boolean
+  /** Additional CSS classes to apply to the input. */
   class?: string
+  /** Label text to display above the input. */
   label?: string
+  /** The value of the input. */
   value?: string
 }
 
@@ -24,6 +36,7 @@ const {
   ...rest
 } = Astro.props
 
+// Construct the class list for the input element
 const inputClasses = [
   'w-full p-3 rounded bg-transparent border border-neon-orange text-white placeholder-gray-400 focus:border-neon-yellow focus:outline-none placeholder:text-shadow-none',
   readonly && 'cursor-default',
@@ -34,6 +47,7 @@ const inputClasses = [
 ---
 
 <div>
+  <!-- Conditional label for the input -->
   {
     label && (
       <label for={id} class="block text-neon-yellow font-bold mb-2">
@@ -41,6 +55,7 @@ const inputClasses = [
       </label>
     )
   }
+  <!-- Input element with custom styling -->
   <input
     type={type}
     id={id}
@@ -55,6 +70,7 @@ const inputClasses = [
   />
 </div>
 
+<!-- Scoped styles to override placeholder text-shadow -->
 <style>
   input::placeholder {
     text-shadow: none !important;

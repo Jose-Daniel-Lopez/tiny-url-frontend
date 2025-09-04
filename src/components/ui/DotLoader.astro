@@ -1,11 +1,16 @@
 ---
+/**
+ * Props for the DotLoader component.
+ */
 interface Props {
+  /** Aria label for the loading indicator, used for accessibility. Defaults to 'Loading'. */
   'aria-label'?: string
 }
 
 const { 'aria-label': ariaLabel = 'Loading' } = Astro.props
 ---
 
+<!-- Loading indicator with three dots animation -->
 <div
   class="loading"
   role="status"
@@ -16,5 +21,6 @@ const { 'aria-label': ariaLabel = 'Loading' } = Astro.props
   <span class="dot"></span>
   <span class="dot"></span>
   <span class="dot"></span>
+  <!-- Screen reader only text for loading state -->
   <span class="sr-only">{ariaLabel}...</span>
 </div>

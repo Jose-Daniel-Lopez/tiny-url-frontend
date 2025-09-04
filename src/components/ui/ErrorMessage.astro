@@ -1,8 +1,15 @@
 ---
+/**
+ * Props for the ErrorMessage component.
+ */
 export interface Props {
+  /** The ID attribute for the error message container. Defaults to 'error'. */
   id?: string
+  /** Additional CSS classes to apply to the error message. */
   class?: string
+  /** The error message text to display. Defaults to 'Error'. */
   message?: string
+  /** Whether the error message is hidden. Defaults to true. */
   hidden?: boolean
 }
 
@@ -14,12 +21,14 @@ const {
   ...rest
 } = Astro.props
 
+// Construct the class list for the error message container
 const errorClasses = ['alert alert-error mt-4', hidden && 'hidden', className]
   .filter(Boolean)
   .join(' ')
 ---
 
 <div id={id} class={errorClasses} {...rest}>
+  <!-- Error icon SVG -->
   <svg
     xmlns="http://www.w3.org/2000/svg"
     class="stroke-current shrink-0 h-6 w-6"
@@ -33,5 +42,6 @@ const errorClasses = ['alert alert-error mt-4', hidden && 'hidden', className]
       d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
     ></path>
   </svg>
+  <!-- Error message text -->
   <span id={`${id}-message`}>{message}</span>
 </div>
