@@ -5,40 +5,73 @@ import ErrorMessage from './ui/ErrorMessage.astro'
 ---
 
 <div class="border-neon rounded-lg p-6 mb-6 bg-gray-800/90">
-  <form id="url-form" class="space-y-4">
-    <Input
-      type="url"
-      id="original-url"
-      name="originalUrl"
-      label="Original URL"
-      placeholder="https://tab-to-dev.click/tejon-tech/"
-      required
-    />
+  <form
+    id="url-form"
+    class="space-y-4"
+    aria-label="URL shortening form"
+    aria-labelledby="form-heading"
+    role="form"
+  >
+    <fieldset class="space-y-4">
+      <legend id="form-heading" class="sr-only">Shorten URL Form</legend>
 
-    <Input
-      type="text"
-      id="url-alias"
-      name="urlAlias"
-      label="URL Alias"
-      placeholder="Leave blank for a random alias"
-    />
+      <Input
+        type="url"
+        id="original-url"
+        name="originalUrl"
+        label="Original URL"
+        placeholder="https://tab-to-dev.click/tejon-tech/"
+        required
+        aria-describedby="url-help"
+      />
+      <div id="url-help" class="sr-only">
+        Enter the full URL you want to shorten, including https:// or http://
+      </div>
 
-    <Input
-      type="password"
-      id="auth-token"
-      name="authToken"
-      label="Auth Token"
-      placeholder="Enter your auth token"
-      required
-    />
+      <Input
+        type="text"
+        id="url-alias"
+        name="urlAlias"
+        label="URL Alias (Optional)"
+        placeholder="Leave blank for a random alias"
+        aria-describedby="alias-help"
+      />
+      <div id="alias-help" class="sr-only">
+        Optional custom alias for your shortened URL. If left blank, a random
+        alias will be generated.
+      </div>
 
-    <Button type="submit" class="btn btn-outline btn-orange w-full">
-      Shorten URL
-    </Button>
+      <Input
+        type="password"
+        id="auth-token"
+        name="authToken"
+        label="Auth Token"
+        placeholder="Enter your auth token"
+        required
+        aria-describedby="auth-help"
+      />
+      <div id="auth-help" class="sr-only">
+        Required authentication token to create shortened URLs
+      </div>
+
+      <Button
+        type="submit"
+        class="btn btn-outline btn-orange w-full"
+        aria-describedby="form-status"
+        disabled={false}
+      >
+        <span id="button-text">Shorten URL</span>
+        <span id="loading-text" class="sr-only" aria-live="polite"></span>
+      </Button>
+    </fieldset>
   </form>
 </div>
 
-<ErrorMessage id="form-error" message="Error" />
+<!-- Status region for dynamic feedback -->
+<div id="form-status" class="sr-only" aria-live="polite" aria-atomic="true">
+</div>
+
+<ErrorMessage id="form-error" message="Error" aria-live="assertive" />
 
 <script>
   //TODO: Clear this code and move to separate JS file
@@ -55,22 +88,35 @@ import ErrorMessage from './ui/ErrorMessage.astro'
     const authToken = formData.get('authToken') as string
 
     if (!originalUrl || !authToken) {
-      showError('Please fill in all required fields')
+      const missingFields = []
+      if (!originalUrl) missingFields.push('Original URL')
+      if (!authToken) missingFields.push('Auth Token')
+
+      const errorMsg = `Please fill in the following required fields: ${missingFields.join(', ')}`
+      showError(errorMsg)
       return
     }
 
     if (!isValidUrl(originalUrl)) {
-      showError('Please enter a valid URL')
+      showError('Please enter a valid URL starting with http:// or https://')
       return
     }
 
     const submitButton = form.querySelector(
       'button[type="submit"]',
     ) as HTMLButtonElement
+    const buttonText = document.getElementById('button-text')
+    const loadingText = document.getElementById('loading-text')
+    const formStatus = document.getElementById('form-status')
+
     const originalButtonText = submitButton.textContent
 
     try {
-      submitButton.textContent = 'Shortening...'
+      // Update button and status for loading
+      if (buttonText) buttonText.textContent = 'Shortening...'
+      if (loadingText) loadingText.textContent = 'Processing your request...'
+      if (formStatus) formStatus.textContent = 'Shortening URL, please wait...'
+
       submitButton.disabled = true
       hideError()
 
@@ -108,13 +154,21 @@ import ErrorMessage from './ui/ErrorMessage.astro'
         if (shortenedUrl) {
           await navigator.clipboard.writeText(shortenedUrl)
           showSuccess('URL shortened successfully! Copied to clipboard.')
+          if (formStatus)
+            formStatus.textContent =
+              'URL shortened and copied to clipboard successfully'
         } else {
           showSuccess(
             'URL shortened successfully! (Could not copy to clipboard)',
           )
+          if (formStatus)
+            formStatus.textContent =
+              'URL shortened successfully, but could not copy to clipboard'
         }
       } catch (clipboardError) {
+        console.warn('Could not copy to clipboard:', clipboardError)
         showSuccess('URL shortened successfully!')
+        if (formStatus) formStatus.textContent = 'URL shortened successfully'
       }
 
       form.reset()
@@ -129,13 +183,19 @@ import ErrorMessage from './ui/ErrorMessage.astro'
       }, 3000)
     } catch (error) {
       console.error('Error shortening URL:', error)
-      showError(
+      const errorMessage =
         error instanceof Error
           ? error.message
-          : 'Failed to shorten URL. Please try again.',
-      )
+          : 'Failed to shorten URL. Please try again.'
+
+      showError(errorMessage)
+      if (formStatus) formStatus.textContent = `Error: ${errorMessage}`
     } finally {
-      submitButton.textContent = originalButtonText
+      // Reset button and status
+      if (buttonText) buttonText.textContent = 'Shorten URL'
+      if (loadingText) loadingText.textContent = ''
+      if (formStatus) formStatus.textContent = ''
+
       submitButton.disabled = false
     }
   })
@@ -143,30 +203,48 @@ import ErrorMessage from './ui/ErrorMessage.astro'
   function showError(message: string) {
     const errorElement = document.getElementById('form-error')
     const errorMessageElement = document.getElementById('form-error-message')
+    const formStatus = document.getElementById('form-status')
+
     if (errorElement && errorMessageElement) {
       errorMessageElement.textContent = message
       errorElement.style.display = 'block'
       errorElement.classList.remove('hidden')
       errorElement.className = 'alert alert-error mt-4'
     }
+
+    if (formStatus) {
+      formStatus.textContent = `Error: ${message}`
+    }
   }
 
   function hideError() {
     const errorElement = document.getElementById('form-error')
+    const formStatus = document.getElementById('form-status')
+
     if (errorElement) {
       errorElement.style.display = 'none'
       errorElement.classList.add('hidden')
+    }
+
+    if (formStatus) {
+      formStatus.textContent = ''
     }
   }
 
   function showSuccess(message: string) {
     const errorElement = document.getElementById('form-error')
     const errorMessageElement = document.getElementById('form-error-message')
+    const formStatus = document.getElementById('form-status')
+
     if (errorElement && errorMessageElement) {
       errorMessageElement.textContent = message
       errorElement.style.display = 'block'
       errorElement.classList.remove('hidden')
       errorElement.className = 'alert alert-success mt-4'
+    }
+
+    if (formStatus) {
+      formStatus.textContent = message
     }
   }
 </script>
