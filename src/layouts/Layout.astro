@@ -15,6 +15,15 @@ const { title } = Astro.props
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
 
+    <!-- Performance optimizations -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Preload critical resources -->
+    <link rel="preload" href="/background.webp" as="image" type="image/webp" />
+    <link rel="preload" href="/favicon.svg" as="image" type="image/svg+xml" />
+
     <meta
       name="description"
       content="TinyURL - Fast and Simple URL Shortener"
