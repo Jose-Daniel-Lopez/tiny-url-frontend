@@ -8,9 +8,21 @@ import DotLoader from './ui/DotLoader.astro'
 <div class="container mx-auto p-6 max-w-2xl">
   <AppHeader />
 
-  <UrlForm />
+  <section aria-labelledby="url-form-heading">
+    <UrlForm />
+  </section>
 
-  <UrlList server:defer>
-    <DotLoader slot="fallback" />
-  </UrlList>
+  <section aria-labelledby="url-list-heading">
+    <UrlList server:defer>
+      <div
+        slot="fallback"
+        role="status"
+        aria-live="polite"
+        aria-label="Loading URLs"
+      >
+        <DotLoader />
+        <span class="sr-only">Loading shortened URLs...</span>
+      </div>
+    </UrlList>
+  </section>
 </div>
