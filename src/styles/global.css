@@ -20,12 +20,37 @@ body {
   background-repeat: no-repeat;
   filter: blur(5px);
   z-index: -1;
+  /* Performance optimization */
+  will-change: auto;
+  contain: layout style paint;
 }
 
-/* Override neo-metro-city text-shadow for a more subtle effect */
+/* Performance optimizations */
+.container {
+  contain: layout style;
+}
+
+/* Optimize animations */
+.btn {
+  will-change: transform;
+  backface-visibility: hidden;
+}
+
+/* Optimize text rendering */
 * {
   text-shadow:
     0 0 0.05em currentColor,
     0 0 0.2em currentColor !important;
   /* 0 0 0.1em currentColor, 0 0 0.5em currentColor (original) */
+}
+
+/* Reduce paint on hover */
+a:hover,
+button:hover {
+  will-change: opacity, transform;
+}
+
+/* Optimize font loading - generic fallback */
+* {
+  font-display: swap;
 }
