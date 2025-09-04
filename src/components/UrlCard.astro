@@ -3,24 +3,35 @@ import type { UrlData } from '../types/url'
 import Button from './ui/Button.astro'
 import ClipboardIcon from '../icons/ClipboardIcon.astro'
 
+/**
+ * Props for the UrlCard component.
+ */
 interface Props {
+  /** The original URL that was shortened. */
   originalUrl: UrlData['originalUrl']
+  /** The shortened URL. */
   shortUrl: UrlData['shortUrl']
+  /** The date when the URL was created. */
   createdDate?: UrlData['createdDate']
+  /** The index of the URL in the list for unique IDs. */
   index?: number
 }
 
 const { originalUrl, shortUrl, createdDate, index = 0 } = Astro.props
+/** Unique ID for the copy button to avoid conflicts. */
 const copyButtonId = `copy-btn-${index}`
 ---
 
+<!-- List item for a shortened URL entry -->
 <li
   class="border-neon rounded-lg p-4 bg-gray-800/90"
   data-date={createdDate}
   role="listitem"
 >
   <div class="space-y-3">
+    <!-- Description list for URL details -->
     <dl class="space-y-3">
+      <!-- Original URL section -->
       <div>
         <dt class="font-bold text-neon-yellow">Original URL:</dt>
         <dd class="mt-1">
@@ -36,6 +47,7 @@ const copyButtonId = `copy-btn-${index}`
         </dd>
       </div>
 
+      <!-- Shortened URL section -->
       <div>
         <dt class="font-bold text-neon-yellow">Shortened URL:</dt>
         <dd class="mt-1 flex items-center justify-between gap-4">
@@ -50,6 +62,7 @@ const copyButtonId = `copy-btn-${index}`
           >
             {shortUrl}
           </a>
+          <!-- Copy button for the shortened URL -->
           <Button
             id={copyButtonId}
             type="button"
@@ -63,6 +76,7 @@ const copyButtonId = `copy-btn-${index}`
         </dd>
       </div>
 
+      <!-- Creation date section -->
       <div>
         <dt class="font-bold text-neon-yellow">Created:</dt>
         <dd class="mt-1">
@@ -80,27 +94,38 @@ const copyButtonId = `copy-btn-${index}`
 </li>
 
 <script define:vars={{ copyButtonId, shortUrl }}>
+  // Get the copy button element
   const copyButton = document.getElementById(copyButtonId)
   if (copyButton) {
+    // Select the SVG icon elements for animation
     const svg = copyButton.querySelector('svg')
-    const path = svg.querySelector('path')
+    const path = svg?.querySelector('path')
+    if (!path) return
+
+    // Store original SVG path attributes
     const originalD = path.getAttribute('d')
     const originalStroke = path.getAttribute('stroke')
+
+    // Define checkmark icon attributes for success feedback
     const checkD = 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'
     const checkStroke = 'var(--neon-green)'
 
+    // Add click event listener to copy URL to clipboard
     copyButton.addEventListener('click', () => {
       navigator.clipboard
         .writeText(shortUrl)
         .then(() => {
+          // Change icon to checkmark on success
           path.setAttribute('d', checkD)
           path.setAttribute('stroke', checkStroke)
+          // Revert icon after 2 seconds
           setTimeout(() => {
             path.setAttribute('d', originalD)
             path.setAttribute('stroke', originalStroke)
           }, 2000)
         })
         .catch(() => {
+          // Fallback error handling
           alert('Failed to copy URL')
         })
     })

@@ -1,13 +1,16 @@
 ---
+/** The current year for copyright display. */
 const currentYear = new Date().getFullYear()
 import GithubIcon from '../icons/GithubIcon.astro'
 ---
 
+<!-- Site footer with developer information and links -->
 <footer
   role="contentinfo"
   aria-label="Site footer with developer information and links"
 >
   <div class="mt-10 bg-gray-800 border border-neon py-4 blink">
+    <!-- Developer credits -->
     <p class="text-center text-gray-300 py-2">
       Developed with ❤️ by <a
         href="https://github.com/Jose-Daniel-Lopez"
@@ -23,6 +26,7 @@ import GithubIcon from '../icons/GithubIcon.astro'
         class="text-gray-300 hover:text-white">Adan</a
       >
     </p>
+    <!-- GitHub repository link -->
     <p class="text-center text-gray-300 py-2">
       <a
         aria-label="Visit our GitHub repository for the TinyURL frontend project"
@@ -34,6 +38,7 @@ import GithubIcon from '../icons/GithubIcon.astro'
         <GithubIcon class="w-4 h-4" /> Github Repository
       </a>
     </p>
+    <!-- Copyright notice -->
     <p class="text-center text-neon-orange mt-5">
       Copyright © <time datetime={currentYear.toString()}>{currentYear}</time> TabToDev
     </p>

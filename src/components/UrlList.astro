@@ -4,6 +4,7 @@ import UrlCard from './UrlCard.astro'
 import type { UrlData } from '../types/url'
 import SortIcon from '../icons/SortIcon.astro'
 
+/** Array of URL data fetched from the API. */
 let urls: UrlData[] = []
 try {
   const response = await fetch(`${API_URL}/urls`)
@@ -13,7 +14,9 @@ try {
 }
 ---
 
+<!-- Section for displaying the list of shortened URLs -->
 <section aria-labelledby="urls-heading">
+  <!-- Header with title and sort button -->
   <header class="flex items-center justify-between gap-4 mb-4">
     <h2
       id="urls-heading"
@@ -27,6 +30,7 @@ try {
       }
     </h2>
 
+    <!-- Sort button, only shown if there are multiple URLs -->
     {
       urls.length > 1 && (
         <button
@@ -51,6 +55,7 @@ try {
     Currently sorted by date ascending
   </div>
 
+  <!-- Conditional rendering based on URL count -->
   {
     urls.length === 0 ? (
       <div
@@ -84,18 +89,24 @@ try {
 </section>
 
 <script>
+  /** Reference to the sort button element. */
   const sortButton = document.getElementById('sort-button')
+  /** Reference to the URL list container. */
   const urlList = document.getElementById('url-list')
+  /** Reference to the sort status element for screen readers. */
   const sortStatus = document.getElementById('sort-status')
+  /** Current sort order: 'asc' or 'desc'. */
   let sortOrder = 'asc'
 
   if (sortButton && urlList) {
+    // Add click event listener for sorting
     sortButton.addEventListener('click', () => {
+      // Get all list items
       const lis = Array.from(urlList.children).filter(
         (li) => li.tagName === 'LI',
       )
 
-      // Sort based on data-date from <li>
+      // Sort based on data-date attribute
       lis.sort((a, b) => {
         const attrA = a.getAttribute('data-date')
         const attrB = b.getAttribute('data-date')
@@ -114,20 +125,20 @@ try {
           : dateB.getTime() - dateA.getTime()
       })
 
-      // Re-append in sorted order
+      // Re-append sorted items to the list
       urlList.innerHTML = ''
       lis.forEach((li) => urlList.appendChild(li))
 
-      // Toggle order and update accessibility attributes
+      // Toggle sort order
       sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'
 
-      // Update aria-pressed
+      // Update aria-pressed attribute
       sortButton.setAttribute(
         'aria-pressed',
         sortOrder === 'desc' ? 'true' : 'false',
       )
 
-      // Update aria-label
+      // Update aria-label for accessibility
       const nextOrder = sortOrder === 'asc' ? 'descending' : 'ascending'
       sortButton.setAttribute('aria-label', `Sort URLs by date ${nextOrder}`)
 
@@ -137,7 +148,7 @@ try {
       }
     })
 
-    // Keyboard support
+    // Add keyboard support for the sort button
     sortButton.addEventListener('keydown', (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault()

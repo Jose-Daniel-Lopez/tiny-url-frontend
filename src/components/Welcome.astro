@@ -5,15 +5,20 @@ import UrlList from './UrlList.astro'
 import DotLoader from './ui/DotLoader.astro'
 ---
 
+<!-- Main container for the application -->
 <div class="container mx-auto p-6 max-w-2xl min-h-screen">
+  <!-- Application header -->
   <AppHeader />
 
+  <!-- Section for the URL shortening form -->
   <section aria-labelledby="url-form-heading">
     <UrlForm />
   </section>
 
+  <!-- Section for the list of shortened URLs with deferred loading -->
   <section aria-labelledby="url-list-heading" class="min-h-[400px]">
     <UrlList server:defer>
+      <!-- Fallback content while loading -->
       <div
         slot="fallback"
         role="status"

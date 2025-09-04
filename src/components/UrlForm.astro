@@ -4,7 +4,9 @@ import Input from './ui/Input.astro'
 import ErrorMessage from './ui/ErrorMessage.astro'
 ---
 
+<!-- URL shortening form container -->
 <div class="border-neon rounded-lg p-6 mb-6 bg-gray-800/90">
+  <!-- Main form for URL shortening -->
   <form
     id="url-form"
     class="space-y-4"
@@ -15,6 +17,7 @@ import ErrorMessage from './ui/ErrorMessage.astro'
     <fieldset class="space-y-4">
       <legend id="form-heading" class="sr-only">Shorten URL Form</legend>
 
+      <!-- Original URL input -->
       <Input
         type="url"
         id="original-url"
@@ -28,6 +31,7 @@ import ErrorMessage from './ui/ErrorMessage.astro'
         Enter the full URL you want to shorten, including https:// or http://
       </div>
 
+      <!-- Optional URL alias input -->
       <Input
         type="text"
         id="url-alias"
@@ -41,6 +45,7 @@ import ErrorMessage from './ui/ErrorMessage.astro'
         alias will be generated.
       </div>
 
+      <!-- Auth token input -->
       <Input
         type="password"
         id="auth-token"
@@ -54,6 +59,7 @@ import ErrorMessage from './ui/ErrorMessage.astro'
         Required authentication token to create shortened URLs
       </div>
 
+      <!-- Submit button -->
       <Button
         type="submit"
         class="btn btn-outline btn-orange w-full"
@@ -71,16 +77,18 @@ import ErrorMessage from './ui/ErrorMessage.astro'
 <div id="form-status" class="sr-only" aria-live="polite" aria-atomic="true">
 </div>
 
+<!-- Error message display -->
 <ErrorMessage id="form-error" message="Error" aria-live="assertive" />
 
 <script>
   // Performance optimization: Debounce form submissions
   let submitTimeout: number | null = null
 
-  //TODO: Clear this code and move to separate JS file
+  // TODO: Clear this code and move to separate JS file
   import { API_URL } from 'astro:env/client'
   import { generateRandomAlias, isValidUrl } from '../utils/urlHelpers'
 
+  // Add event listener for form submission
   document.getElementById('url-form')?.addEventListener('submit', async (e) => {
     e.preventDefault()
 
@@ -93,6 +101,7 @@ import ErrorMessage from './ui/ErrorMessage.astro'
     const urlAlias = formData.get('urlAlias') as string
     const authToken = formData.get('authToken') as string
 
+    // Validate required fields
     if (!originalUrl || !authToken) {
       const missingFields = []
       if (!originalUrl) missingFields.push('Original URL')
@@ -103,6 +112,7 @@ import ErrorMessage from './ui/ErrorMessage.astro'
       return
     }
 
+    // Validate URL format
     if (!isValidUrl(originalUrl)) {
       showError('Please enter a valid URL starting with http:// or https://')
       return
@@ -130,6 +140,7 @@ import ErrorMessage from './ui/ErrorMessage.astro'
       const controller = new AbortController()
       const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
 
+      // Send POST request to shorten URL
       const response = await fetch(`${API_URL}/shorten`, {
         method: 'POST',
         headers: {
@@ -145,6 +156,7 @@ import ErrorMessage from './ui/ErrorMessage.astro'
 
       clearTimeout(timeoutId)
 
+      // Handle non-OK responses
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
         throw new Error(
@@ -155,7 +167,7 @@ import ErrorMessage from './ui/ErrorMessage.astro'
 
       const result = await response.json()
 
-      // Copy shortened URL to clipboard
+      // Attempt to copy shortened URL to clipboard
       try {
         const shortenedUrl =
           result.shortenedUrl ||
@@ -186,6 +198,7 @@ import ErrorMessage from './ui/ErrorMessage.astro'
 
       form.reset()
 
+      // Dispatch custom event for other components
       const successEvent = new CustomEvent('url-shortened', {
         detail: { url: result },
       })
@@ -197,6 +210,7 @@ import ErrorMessage from './ui/ErrorMessage.astro'
         submitTimeout = null
       }, 2000)
     } catch (error) {
+      // Handle different error types
       if (error instanceof Error && error.name === 'AbortError') {
         showError('Request timed out. Please try again.')
       } else {
@@ -223,6 +237,10 @@ import ErrorMessage from './ui/ErrorMessage.astro'
     }
   })
 
+  /**
+   * Displays an error message to the user.
+   * @param message - The error message to display.
+   */
   function showError(message: string) {
     const errorElement = document.getElementById('form-error')
     const errorMessageElement = document.getElementById('form-error-message')
@@ -240,6 +258,9 @@ import ErrorMessage from './ui/ErrorMessage.astro'
     }
   }
 
+  /**
+   * Hides the error message display.
+   */
   function hideError() {
     const errorElement = document.getElementById('form-error')
     const formStatus = document.getElementById('form-status')
@@ -254,6 +275,10 @@ import ErrorMessage from './ui/ErrorMessage.astro'
     }
   }
 
+  /**
+   * Displays a success message to the user.
+   * @param message - The success message to display.
+   */
   function showSuccess(message: string) {
     const errorElement = document.getElementById('form-error')
     const errorMessageElement = document.getElementById('form-error-message')
