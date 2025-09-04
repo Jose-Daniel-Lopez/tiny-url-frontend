@@ -12,6 +12,23 @@ export default defineConfig({
 
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      minify: 'terser',
+      terserOptions: {
+        compress: {
+          drop_console: true,
+          drop_debugger: true,
+        },
+      },
+      cssMinify: true,
+      rollupOptions: {
+        output: {
+          manualChunks: {
+            vendor: ['astro'],
+          },
+        },
+      },
+    },
   },
 
   env: {
@@ -37,4 +54,17 @@ export default defineConfig({
       customPages: [],
     }),
   ],
+
+  // Performance optimizations
+  compressHTML: true,
+  build: {
+    inlineStylesheets: 'auto',
+  },
+
+  // Image optimization
+  image: {
+    service: {
+      entrypoint: 'astro/assets/services/sharp',
+    },
+  },
 })
