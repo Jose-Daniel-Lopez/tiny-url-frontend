@@ -16,6 +16,14 @@ import ErrorMessage from './ui/ErrorMessage.astro'
     />
 
     <Input
+      type="text"
+      id="url-alias"
+      name="urlAlias"
+      label="URL Alias"
+      placeholder="Leave blank for a random alias"
+    />
+
+    <Input
       type="password"
       id="auth-token"
       name="authToken"
@@ -43,6 +51,7 @@ import ErrorMessage from './ui/ErrorMessage.astro'
     const form = e.target as HTMLFormElement
     const formData = new FormData(form)
     const originalUrl = formData.get('originalUrl') as string
+    const urlAlias = formData.get('urlAlias') as string
     const authToken = formData.get('authToken') as string
 
     if (!originalUrl || !authToken) {
@@ -69,11 +78,11 @@ import ErrorMessage from './ui/ErrorMessage.astro'
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${authToken}`,
         },
         body: JSON.stringify({
           originalUrl: originalUrl,
-          alias: generateRandomAlias(),
+          authCode: authToken,
+          alias: urlAlias || generateRandomAlias(),
         }),
       })
 
