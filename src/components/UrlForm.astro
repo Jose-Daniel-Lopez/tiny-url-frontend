@@ -1,0 +1,144 @@
+---
+import Button from './ui/Button.astro'
+import Input from './ui/Input.astro'
+import ErrorMessage from './ui/ErrorMessage.astro'
+---
+
+<div class="border-neon rounded-lg p-6 mb-6">
+  <form id="url-form" class="space-y-4">
+    <Input
+      type="url"
+      id="original-url"
+      name="originalUrl"
+      label="Original URL"
+      placeholder="https://tab-to-dev.click/tejon-tech/"
+      required
+    />
+
+    <Input
+      type="password"
+      id="auth-token"
+      name="authToken"
+      label="Auth Token"
+      placeholder="Enter your auth token"
+      required
+    />
+
+    <Button type="submit" class="btn btn-outline btn-orange w-full">
+      Shorten URL
+    </Button>
+  </form>
+</div>
+
+<ErrorMessage id="form-error" message="Error" />
+
+<script>
+  //TODO: Clear this code and move to separate JS file
+  import { API_URL } from 'astro:env/client'
+  import { generateRandomAlias, isValidUrl } from '../utils/urlHelpers'
+
+  document.getElementById('url-form')?.addEventListener('submit', async (e) => {
+    e.preventDefault()
+
+    const form = e.target as HTMLFormElement
+    const formData = new FormData(form)
+    const originalUrl = formData.get('originalUrl') as string
+    const authToken = formData.get('authToken') as string
+
+    if (!originalUrl || !authToken) {
+      showError('Please fill in all required fields')
+      return
+    }
+
+    if (!isValidUrl(originalUrl)) {
+      showError('Please enter a valid URL')
+      return
+    }
+
+    const submitButton = form.querySelector(
+      'button[type="submit"]',
+    ) as HTMLButtonElement
+    const originalButtonText = submitButton.textContent
+
+    try {
+      submitButton.textContent = 'Shortening...'
+      submitButton.disabled = true
+      hideError()
+
+      const response = await fetch(`${API_URL}/shorten`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify({
+          originalUrl: originalUrl,
+          alias: generateRandomAlias(),
+        }),
+      })
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}))
+        throw new Error(
+          errorData.message ||
+            `HTTP ${response.status}: ${response.statusText}`,
+        )
+      }
+
+      const result = await response.json()
+
+      showSuccess('URL shortened successfully!')
+
+      form.reset()
+
+      const successEvent = new CustomEvent('url-shortened', {
+        detail: { url: result },
+      })
+      document.dispatchEvent(successEvent)
+
+      setTimeout(() => {
+        window.location.reload() // I don't like this but it's the simplest way to refresh the list 😢
+      }, 1500)
+    } catch (error) {
+      console.error('Error shortening URL:', error)
+      showError(
+        error instanceof Error
+          ? error.message
+          : 'Failed to shorten URL. Please try again.',
+      )
+    } finally {
+      submitButton.textContent = originalButtonText
+      submitButton.disabled = false
+    }
+  })
+
+  function showError(message: string) {
+    const errorElement = document.getElementById('form-error')
+    const errorMessageElement = document.getElementById('form-error-message')
+    if (errorElement && errorMessageElement) {
+      errorMessageElement.textContent = message
+      errorElement.style.display = 'block'
+      errorElement.classList.remove('hidden')
+      errorElement.className = 'alert alert-error mt-4'
+    }
+  }
+
+  function hideError() {
+    const errorElement = document.getElementById('form-error')
+    if (errorElement) {
+      errorElement.style.display = 'none'
+      errorElement.classList.add('hidden')
+    }
+  }
+
+  function showSuccess(message: string) {
+    const errorElement = document.getElementById('form-error')
+    const errorMessageElement = document.getElementById('form-error-message')
+    if (errorElement && errorMessageElement) {
+      errorMessageElement.textContent = message
+      errorElement.style.display = 'block'
+      errorElement.classList.remove('hidden')
+      errorElement.className = 'alert alert-success mt-4'
+    }
+  }
+</script>
