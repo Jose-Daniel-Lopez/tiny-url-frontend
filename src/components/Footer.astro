@@ -3,18 +3,23 @@ const currentYear = new Date().getFullYear()
 import GithubIcon from '../icons/GithubIcon.astro'
 ---
 
-<footer>
+<footer
+  role="contentinfo"
+  aria-label="Site footer with developer information and links"
+>
   <div class="mt-10 bg-gray-800 border border-neon py-4 blink">
     <p class="text-center text-gray-300 py-2">
       Developed with ❤️ by <a
         href="https://github.com/Jose-Daniel-Lopez"
         target="_blank"
         rel="noopener noreferrer"
+        aria-label="Visit Jose Daniel Lopez's GitHub profile"
         class="text-gray-300 hover:text-white">Jose</a
       > & <a
         href="https://github.com/Adan-Perez"
         target="_blank"
         rel="noopener noreferrer"
+        aria-label="Visit Adan Perez's GitHub profile"
         class="text-gray-300 hover:text-white">Adan</a
       >
     </p>
@@ -30,7 +35,7 @@ import GithubIcon from '../icons/GithubIcon.astro'
       </a>
     </p>
     <p class="text-center text-neon-orange mt-5">
-      Copyright © {currentYear} TabToDev
+      Copyright © <time datetime={currentYear.toString()}>{currentYear}</time> TabToDev
     </p>
   </div>
 </footer>
