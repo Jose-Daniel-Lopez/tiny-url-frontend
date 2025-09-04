@@ -8,7 +8,12 @@ const urls: UrlData[] = await response.json()
 ---
 
 <div class="mt-6">
-  <h2 class="text-2xl font-bold mb-4">Shortened URLs</h2>
+  <h2
+    class="text-2xl font-bold mb-4 flex items-center justify-between gap-4 tracking-wider"
+  >
+    <span class="blink">Shortened URLs</span>
+    <span> test </span>
+  </h2>
   {
     urls.length === 0 ? (
       <p>No URLs shortened yet.</p>
@@ -18,6 +23,7 @@ const urls: UrlData[] = await response.json()
           <UrlCard
             originalUrl={url.originalUrl}
             shortUrl={url.shortUrl}
+            createdDate={url.createdDate}
             index={index}
           />
         ))}

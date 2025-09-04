@@ -3,12 +3,14 @@ export interface UrlData {
   originalUrl: string
   shortUrl: string
   alias?: string
-  createdAt?: string
+  authCode?: string
+  createdDate?: string
 }
 
 export interface CreateUrlRequest {
   originalUrl: string
   alias?: string
+  authCode?: string
 }
 
 export interface CreateUrlResponse {
