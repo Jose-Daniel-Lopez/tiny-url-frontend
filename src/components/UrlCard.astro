@@ -46,6 +46,7 @@ const copyButtonId = `copy-btn-${index}`
       class="btn px-4 py-2 text-sm transition-all duration-200 hover:scale-105"
       data-url={shortUrl}
       data-index={index}
+      aria-label={`Copy shortened URL ${shortUrl} to clipboard`}
     >
       <ClipboardIcon />
     </Button>
