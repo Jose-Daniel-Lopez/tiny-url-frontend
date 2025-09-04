@@ -14,48 +14,69 @@ const { originalUrl, shortUrl, createdDate, index = 0 } = Astro.props
 const copyButtonId = `copy-btn-${index}`
 ---
 
-<li class="border-neon rounded-lg p-4 bg-gray-800/90" data-date={createdDate}>
-  <p class="mb-3">
-    <strong>Original URL:</strong>
-    <a
-      href={originalUrl}
-      class="text-blue-500 hover:underline"
-      target="_blank"
-      rel="noopener noreferrer"
-    >
-      {originalUrl}
-    </a>
-  </p>
-  <div class="flex items-center justify-between gap-4">
-    <div class="flex-1 mb-3">
-      <strong>Shortened URL:</strong>
-      <a
-        href={shortUrl}
-        class="text-blue-500 hover:underline shortened-url"
-        target="_blank"
-        rel="noopener noreferrer"
+<li
+  class="border-neon rounded-lg p-4 bg-gray-800/90"
+  data-date={createdDate}
+  role="listitem"
+>
+  <dl class="space-y-3">
+    <div>
+      <dt class="font-bold text-neon-yellow">Original URL:</dt>
+      <dd class="mt-1">
+        <a
+          href={originalUrl}
+          aria-label={`Open original URL: ${originalUrl} in new tab`}
+          class="text-blue-400 hover:text-blue-300 hover:underline focus:underline focus:outline-none focus:ring-2 focus:ring-neon-yellow focus:ring-offset-2 focus:ring-offset-gray-800 rounded"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          {originalUrl}
+        </a>
+      </dd>
+    </div>
+
+    <div class="flex items-center justify-between gap-4">
+      <div class="flex-1">
+        <dt class="font-bold text-neon-yellow">Shortened URL:</dt>
+        <dd class="mt-1">
+          <a
+            href={shortUrl}
+            aria-label={`Open shortened URL: ${shortUrl} in new tab`}
+            class="text-blue-400 hover:text-blue-300 hover:underline focus:underline focus:outline-none focus:ring-2 focus:ring-neon-yellow focus:ring-offset-2 focus:ring-offset-gray-800 shortened-url rounded"
+            target="_blank"
+            rel="noopener noreferrer"
+            data-url={shortUrl}
+            data-index={index}
+          >
+            {shortUrl}
+          </a>
+        </dd>
+      </div>
+      <Button
+        id={copyButtonId}
+        type="button"
+        class="btn px-4 py-2 text-sm transition-all duration-200 hover:scale-105"
         data-url={shortUrl}
         data-index={index}
+        aria-label={`Copy shortened URL ${shortUrl} to clipboard`}
       >
-        {shortUrl}
-      </a>
+        <ClipboardIcon />
+      </Button>
     </div>
-    <Button
-      id={copyButtonId}
-      type="button"
-      class="btn px-4 py-2 text-sm transition-all duration-200 hover:scale-105"
-      data-url={shortUrl}
-      data-index={index}
-      aria-label={`Copy shortened URL ${shortUrl} to clipboard`}
-    >
-      <ClipboardIcon />
-    </Button>
-  </div>
-  <p class="gap-4">
-    <strong>Date:</strong>
-    <!-- Keep this for display, but now li has data-date too -->
-    <span class="text-blue-500" data-date={createdDate}>{createdDate}</span>
-  </p>
+
+    <div>
+      <dt class="font-bold text-neon-yellow">Created:</dt>
+      <dd class="mt-1">
+        <time
+          class="text-blue-400"
+          data-date={createdDate}
+          datetime={createdDate}
+        >
+          {createdDate}
+        </time>
+      </dd>
+    </div>
+  </dl>
 </li>
 
 <script define:vars={{ copyButtonId, shortUrl }}>
