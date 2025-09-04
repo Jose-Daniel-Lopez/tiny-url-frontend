@@ -13,28 +13,63 @@ try {
 }
 ---
 
-<div class="mt-6">
-  <h2
-    class="text-2xl font-bold mb-4 flex items-center justify-between gap-4 tracking-wider"
-  >
-    <span class="blink">Shortened URLs</span>
-    <button
-      aria-label="Sort URLs by date"
-      title="Sort URLs by date"
-      aria-pressed="false"
-      id="sort-button"
-      class="hover:scale-110 transition-transform duration-200 cursor-pointer"
+<section aria-labelledby="urls-heading">
+  <header class="flex items-center justify-between gap-4 mb-4">
+    <h2
+      id="urls-heading"
+      class="text-2xl font-bold tracking-wider text-neon-yellow"
     >
-      <div class="border-neon rounded-lg p-2 bg-gray-800/90">
-        <SortIcon class="w-4 h-4" />
-      </div>
-    </button>
-  </h2>
+      <span class="blink">Shortened URLs</span>
+      {
+        urls.length > 0 && (
+          <span class="sr-only">({urls.length} URLs found)</span>
+        )
+      }
+    </h2>
+
+    {
+      urls.length > 1 && (
+        <button
+          id="sort-button"
+          aria-label="Sort URLs by date ascending"
+          aria-pressed="false"
+          aria-describedby="sort-status"
+          title="Sort URLs by date"
+          class="hover:scale-110 transition-transform duration-200 cursor-pointer focus:outline-none focus:ring-2 focus:ring-neon-yellow focus:ring-offset-2 focus:ring-offset-gray-900 rounded-lg"
+        >
+          <div class="border-neon rounded-lg p-2 bg-gray-800/90">
+            <SortIcon class="w-4 h-4" aria-hidden={true} />
+          </div>
+          <span class="sr-only">Sort</span>
+        </button>
+      )
+    }
+  </header>
+
+  <!-- Status for sort state -->
+  <div id="sort-status" class="sr-only" aria-live="polite" aria-atomic="true">
+    Currently sorted by date ascending
+  </div>
+
   {
     urls.length === 0 ? (
-      <p>No URLs shortened yet.</p>
+      <div
+        class="text-center py-8 text-gray-400"
+        role="status"
+        aria-live="polite"
+      >
+        <p class="text-lg">No URLs shortened yet.</p>
+        <p class="text-sm mt-2">
+          Create your first shortened URL using the form above.
+        </p>
+      </div>
     ) : (
-      <ul id="url-list" class="space-y-4">
+      <ul
+        id="url-list"
+        class="space-y-4"
+        role="list"
+        aria-label={`List of ${urls.length} shortened URLs`}
+      >
         {urls.map((url: UrlData, index: number) => (
           <UrlCard
             originalUrl={url.originalUrl}
@@ -46,11 +81,12 @@ try {
       </ul>
     )
   }
-</div>
+</section>
 
 <script>
   const sortButton = document.getElementById('sort-button')
   const urlList = document.getElementById('url-list')
+  const sortStatus = document.getElementById('sort-status')
   let sortOrder = 'asc'
 
   if (sortButton && urlList) {
@@ -82,8 +118,31 @@ try {
       urlList.innerHTML = ''
       lis.forEach((li) => urlList.appendChild(li))
 
-      // Toggle order
+      // Toggle order and update accessibility attributes
       sortOrder = sortOrder === 'asc' ? 'desc' : 'asc'
+
+      // Update aria-pressed
+      sortButton.setAttribute(
+        'aria-pressed',
+        sortOrder === 'desc' ? 'true' : 'false',
+      )
+
+      // Update aria-label
+      const nextOrder = sortOrder === 'asc' ? 'descending' : 'ascending'
+      sortButton.setAttribute('aria-label', `Sort URLs by date ${nextOrder}`)
+
+      // Update status for screen readers
+      if (sortStatus) {
+        sortStatus.textContent = `Currently sorted by date ${sortOrder === 'asc' ? 'ascending' : 'descending'}`
+      }
+    })
+
+    // Keyboard support
+    sortButton.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault()
+        sortButton.click()
+      }
     })
   }
 </script>
