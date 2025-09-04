@@ -2,6 +2,7 @@
 import { API_URL } from 'astro:env/client'
 import UrlCard from './UrlCard.astro'
 import type { UrlData } from '../types/url'
+import SortIcon from '../icons/SortIcon.astro'
 
 const response = await fetch(`${API_URL}/urls`)
 const urls: UrlData[] = await response.json()
@@ -9,10 +10,12 @@ const urls: UrlData[] = await response.json()
 
 <div class="mt-6">
   <h2
-    class="text-2xl font-bold mb-4 flex items-center justify-between gap-4 tracking-wider"
+    class="text-2xl font-bold mb-4 flex items-center justify-between gap-4 tracking-wider blink"
   >
     <span class="blink">Shortened URLs</span>
-    <span> test </span>
+    <SortIcon
+      class="w-6 h-6 hover:scale-110 transition-transform duration-200 cursor-pointer"
+    />
   </h2>
   {
     urls.length === 0 ? (

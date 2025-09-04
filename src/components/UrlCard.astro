@@ -64,7 +64,7 @@ const copyButtonId = `copy-btn-${index}`
     const originalD = path.getAttribute('d')
     const originalStroke = path.getAttribute('stroke')
     const checkD = 'M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z'
-    const checkStroke = 'green'
+    const checkStroke = 'var(--neon-green)'
 
     copyButton.addEventListener('click', () => {
       navigator.clipboard
