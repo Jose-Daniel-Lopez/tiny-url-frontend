@@ -1,16 +1,22 @@
 ---
+// Import global styles
 import '../styles/global.css'
 
+// Import components
 import Welcome from '../components/Welcome.astro'
 import Layout from '../layouts/Layout.astro'
 import Footer from '../components/Footer.astro'
 
+// Enable prerendering for this page
 export const prerender = true
 ---
 
+<!-- Main layout with title -->
 <Layout title="TinyURL - Fast and Simple URL Shortener">
+  <!-- Main content area -->
   <main role="main" aria-label="TinyURL Application">
     <Welcome />
   </main>
+  <!-- Site footer -->
   <Footer />
 </Layout>

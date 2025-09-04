@@ -1,5 +1,9 @@
 ---
+/**
+ * Props for the Layout component.
+ */
 interface Props {
+  /** The title for the HTML document. */
   title: string
 }
 
@@ -8,6 +12,7 @@ const { title } = Astro.props
 
 <!doctype html>
 <html lang="en">
+  <!-- Document head with metadata and optimizations -->
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
@@ -15,7 +20,7 @@ const { title } = Astro.props
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
 
-    <!-- Performance optimizations -->
+    <!-- Performance optimizations for external fonts -->
     <link rel="dns-prefetch" href="//fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -24,6 +29,7 @@ const { title } = Astro.props
     <link rel="preload" href="/background.webp" as="image" type="image/webp" />
     <link rel="preload" href="/favicon.svg" as="image" type="image/svg+xml" />
 
+    <!-- SEO meta tags -->
     <meta
       name="description"
       content="TinyURL - Fast and Simple URL Shortener"
@@ -32,6 +38,7 @@ const { title } = Astro.props
       name="keywords"
       content="URL shortener, TinyURL, link management, short links"
     />
+    <!-- Open Graph meta tags for social sharing -->
     <meta
       property="og:title"
       content="TinyURL - Fast and Simple URL Shortener"
@@ -40,14 +47,17 @@ const { title } = Astro.props
       property="og:description"
       content="TinyURL - Fast and Simple URL Shortener"
     />
-    <!-- Provisional image -->
+    <!-- Provisional image for Open Graph -->
     <meta
       property="og:image"
       content="https://res.cloudinary.com/tejon-tech/image/upload/v1756151699/e-commerce/logo-full.webp"
     />
   </head>
+  <!-- Document body -->
   <body>
+    <!-- Background element -->
     <div class="background"></div>
+    <!-- Main content slot -->
     <slot />
   </body>
 </html>
