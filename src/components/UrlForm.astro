@@ -141,24 +141,32 @@ import ErrorMessage from './ui/ErrorMessage.astro'
       const timeoutId = setTimeout(() => controller.abort(), 10000) // 10 second timeout
 
       // Send POST request to shorten URL
-      const response = await fetch(`${API_URL}/shorten`, {
+      const fullUrl = `${API_URL}/shorten`
+      console.log('Full URL:', fullUrl)
+      const requestBody = {
+        originalUrl: originalUrl,
+        authCode: authToken,
+        alias: urlAlias || generateRandomAlias(),
+      }
+      console.log('Request body:', requestBody)
+      const response = await fetch(fullUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          originalUrl: originalUrl,
-          authCode: authToken,
-          alias: urlAlias || generateRandomAlias(),
-        }),
+        body: JSON.stringify(requestBody),
         signal: controller.signal,
       })
 
       clearTimeout(timeoutId)
 
+      console.log('Response status:', response.status)
+      console.log('Response headers:', response.headers)
+
       // Handle non-OK responses
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}))
+        console.log('Error response data:', errorData)
         throw new Error(
           errorData.message ||
             `HTTP ${response.status}: ${response.statusText}`,
@@ -166,6 +174,7 @@ import ErrorMessage from './ui/ErrorMessage.astro'
       }
 
       const result = await response.json()
+      console.log('Success response data:', result)
 
       // Attempt to copy shortened URL to clipboard
       try {

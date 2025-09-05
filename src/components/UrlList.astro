@@ -7,9 +7,19 @@ import SortIcon from '../icons/SortIcon.astro'
 /** Array of URL data fetched from the API. */
 let urls: UrlData[] = []
 try {
-  const response = await fetch(`${API_URL}/urls`)
-  urls = await response.json()
-} catch {
+  const fullUrl = `${API_URL}/urls`
+  console.log('Full URL:', fullUrl)
+  const response = await fetch(fullUrl)
+  console.log('Response status:', response.status)
+  console.log(
+    'Response headers:',
+    Object.fromEntries(response.headers.entries()),
+  )
+  const responseText = await response.text()
+  console.log('Response text:', responseText)
+  urls = JSON.parse(responseText)
+} catch (error) {
+  console.log('Error fetching URLs:', error)
   urls = []
 }
 ---
