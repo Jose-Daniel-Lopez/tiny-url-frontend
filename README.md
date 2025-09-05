@@ -155,11 +155,9 @@ The frontend integrates with a backend API for URL operations:
 
 ```typescript
 interface UrlData {
-  id: string | number
   originalUrl: string
   shortUrl: string
   alias?: string
-  authCode?: string
   createdDate?: string
 }
 
